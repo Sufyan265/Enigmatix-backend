@@ -11,16 +11,12 @@ exports.protect = async (req, res, next) => {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            console.log(decoded.id, decoded.userId);
-
             // Get user from the token
             if (decoded.id) {
                 req.user = await User.findById(decoded.id).select('-password');
             } else if (decoded.userId) {
                 req.user = await User.findById(decoded.userId);
             }
-            // req.user = await User.findById(decoded.id).select('-password');
-
 
             if (!req.user) {
                 return res.status(401).json({ message: 'User not found' });
@@ -32,7 +28,6 @@ exports.protect = async (req, res, next) => {
             res.status(401).json({ message: 'Not authorized, token failed' });
         }
     }
-
     if (!token) {
         res.status(401).json({ message: 'Not authorized, no token' });
     }

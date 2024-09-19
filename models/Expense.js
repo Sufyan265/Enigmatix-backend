@@ -1,21 +1,19 @@
 const mongoose = require('mongoose');
 
 const expenseSchema = mongoose.Schema({
-    description: {
-        type: String,
-        required: true
-    },
     amount: {
         type: Number,
         required: true
     },
     submittedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', required: true
+        ref: 'User',
+        required: true
     },
-    company: {
+    companyId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company', required: true
+        ref: 'Company',
+        required: true
     },
     isApproved: {
         type: Boolean,

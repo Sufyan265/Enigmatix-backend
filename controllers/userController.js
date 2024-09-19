@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Company = require('../models/Company');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Create User (Company Admin only)
 exports.createUser = async (req, res) => {
@@ -61,6 +63,35 @@ exports.getUserById = async (req, res) => {
         }
 
         res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+// Login User
+exports.loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Please provide both email and password.' });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, user });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

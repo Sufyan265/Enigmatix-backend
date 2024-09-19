@@ -17,8 +17,8 @@ dbConnect();
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
-app.use('/api/expenses', expenseRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 // Error middleware
 app.use(errorHandler);
