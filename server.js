@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors'); // Step 2: Require the cors package
 const dbConnect = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const companyRoutes = require('./routes/companyRoutes');
@@ -10,6 +11,7 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Connect to DB
 dbConnect();

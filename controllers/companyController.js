@@ -25,7 +25,7 @@ exports.createCompany = async (req, res) => {
 
         // Create a new company
         const company = new Company({
-            name: companyName,
+            companyName: companyName,
             owner: req.user._id // Automatically assign the Super Admin as the owner
         });
 
@@ -81,5 +81,36 @@ exports.loginCompany = async (req, res) => {
         res.status(200).json({ token, company: user.company });
     } catch (error) {
         res.status(500).json({ message: 'Server error. Could not log in.', error: error.message });
+    }
+};
+
+// GET all companies
+exports.getAllCompanies = async (req, res) => {
+    try {
+        if (req.user.role !== 'super-admin') {
+            return res.status(403).json({ message: 'Access denied. Only Super Admins can view all companies.' });
+        }
+
+        const companies = await Company.find().populate('owner', 'name email');
+        if (!companies) {
+            return res.status(404).json({ message: 'No companies found.' });
+        }
+
+        const companiesAdmin = await User.find({ role: 'company-admin' }).populate('company', 'companyName');
+        if (!companiesAdmin) {
+            return res.status(404).json({ message: 'No company admins found.' });
+        }
+
+        const result = companies.map(company => {
+            const admin = companiesAdmin.find(admin => admin.company._id.toString() === company._id.toString());
+            return {
+                company,
+                admin
+            };
+        });
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error. Could not fetch companies.', error: error.message });
     }
 };
