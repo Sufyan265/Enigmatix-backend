@@ -35,6 +35,22 @@ exports.submitExpense = async (req, res) => {
     }
 };
 
+// Fetch All Expenses (Admin)
+exports.allExpenses = async (req, res) => {
+    try {
+        // Fetch all expenses
+        const expenses = await Expense.find()
+            .populate('submittedBy', 'name email') // Populating user info
+            .populate('approvedBy', 'name email')  // Populating approver info if available
+            .populate('companyId', 'name');       // Populating company info
+
+        res.json(expenses);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
 // Approve Expense (Company Admin)
 exports.approveExpense = async (req, res) => {
     try {
@@ -47,7 +63,6 @@ exports.approveExpense = async (req, res) => {
         }
 
         const expense = await Expense.findById(id);
-        console.log(expense)
         if (!expense) {
             return res.status(404).json({ message: 'Expense not found' });
         }

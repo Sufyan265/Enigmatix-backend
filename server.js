@@ -5,6 +5,7 @@ const dbConnect = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
+const incomeRoutes = require('./routes/incomeRoutes');
 const userRoutes = require('./routes/userRoutes');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -20,7 +21,9 @@ dbConnect();
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/users', userRoutes);
+
 app.use('/api/expenses', expenseRoutes);
+app.use('/api/incomes', incomeRoutes);
 
 // Error middleware
 app.use(errorHandler);
