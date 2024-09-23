@@ -36,10 +36,22 @@ exports.submitExpense = async (req, res) => {
 };
 
 // Fetch All Expenses (Admin)
-exports.allExpenses = async (req, res) => {
+exports.companyExpenses = async (req, res) => {
     try {
+        const { companyId } = req.params;
+
+        // Check if companyId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(companyId)) {
+            return res.status(400).json({ message: 'Invalid company ID.' });
+        }
+
+        const company = await Company.findById(companyId);
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+
         // Fetch all expenses
-        const expenses = await Expense.find()
+        const expenses = await Expense.find({ companyId })
             .populate('submittedBy', 'name email') // Populating user info
             .populate('approvedBy', 'name email')  // Populating approver info if available
             .populate('companyId', 'name');       // Populating company info

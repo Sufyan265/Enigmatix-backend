@@ -33,11 +33,23 @@ exports.submitIncome = async (req, res) => {
     }
 };
 
-// Fetch All Incomes (Admin)
-exports.allIncomes = async (req, res) => {
+// Fetch Incomes for a Specific Company (Admin)
+exports.companyIncomes = async (req, res) => {
     try {
-        // Fetch all incomes
-        const incomes = await Income.find()
+        const { companyId } = req.params;
+
+        // Check if companyId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(companyId)) {
+            return res.status(400).json({ message: 'Invalid company ID.' });
+        }
+
+        const company = await Company.findById(companyId);
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+
+        // Fetch all incomes for the specific company
+        const incomes = await Income.find({ companyId })
             .populate('companyId', 'name');       // Populating company info
 
         res.json(incomes);

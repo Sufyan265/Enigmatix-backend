@@ -9,4 +9,4 @@ router.get('/', protect, companyAdmin, getUsersByCompany); // Get users by compa
 router.get('/:id', protect, getUserById); // Get single user by ID
 router.post('/login', loginUser); // Login user
 
-module.exports = router;
+module.exports = router; 
