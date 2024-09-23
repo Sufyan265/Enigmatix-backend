@@ -28,5 +28,9 @@ app.use('/api/incomes', incomeRoutes);
 // Error middleware
 app.use(errorHandler);
 
+app.get('/', (req, res) => {
+    res.json({ message: 'The server is working' });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
